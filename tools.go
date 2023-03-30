@@ -180,6 +180,9 @@ func allToNum(sum int, packs []int) int {
 	return dp[sum]
 }
 func getC(num, all int) int {
+	if all-num > num {
+		return getC(all-num, num)
+	}
 	cheng := all
 	chu := 1
 	ans := 1
