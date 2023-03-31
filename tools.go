@@ -297,34 +297,56 @@ func prim(tu [][]int) int {
 	return ans
 }
 
-// 小根堆
-type gz struct {
-	X, Y, V int
+// edge[] = {fromIndex, toIndex, val}
+func disk(nodeNum int, edges [][]int) int {
+	// 是否在图内
+	tuNodeNum := 0
+	isInTu := make([]bool, nodeNum)
+	// 祖先节点
+	fIndexs := make([]int, nodeNum)
+	for i := 1; i < nodeNum; i++ {
+		fIndexs[i] = i
+	}
+	sort.Slice(edges, func(i, j int) bool {
+		return edges[i][2] < edges[j][2]
+	})
+	var findF func(int) int
+	findF = func(nIndex int) int {
+		if fIndexs[nIndex] == nIndex {
+			return nIndex
+		}
+		fIndexs[nIndex] = findF(fIndexs[nIndex])
+		return fIndexs[nIndex]
+	}
+	ans := 0
+	for _, edge := range edges {
+		if tuNodeNum == nodeNum {
+			break
+		}
+		from, to, v := edge[0], edge[1], edge[2]
+		if isInTu[from] && isInTu[to] {
+			fF := findF(from)
+			fT := findF(to)
+			if fF != fT {
+				fIndexs[fF] = fT
+				ans += v
+			}
+			continue
+		}
+		if !isInTu[from] && !isInTu[to] {
+			tuNodeNum += 2
+			isInTu[from], isInTu[to] = true, true
+			fIndexs[from] = to
+		} else if isInTu[from] {
+			isInTu[to] = true
+			tuNodeNum++
+			fIndexs[to] = findF(from)
+		} else {
+			isInTu[from] = true
+			tuNodeNum++
+			fIndexs[from] = findF(to)
+		}
+		ans += v
+	}
+	return ans
 }
-type GzHeap []gz
-
-func (gzheap GzHeap) Len() int            { return len(gzheap) }
-func (gzheap GzHeap) Less(i, j int) bool  { return gzheap[i].V < gzheap[j].V }
-func (gzheap GzHeap) Swap(i, j int)       { gzheap[i], gzheap[j] = gzheap[j], gzheap[i] }
-func (gzheap *GzHeap) Push(x interface{}) { *gzheap = append(*gzheap, x.(gz)) }
-
-// 返回最后一个值，删除最后一个值
-func (gzheap *GzHeap) Pop() interface{} {
-	old := *gzheap
-	n := len(old) - 1
-	x := old[n]
-	*gzheap = old[:n]
-	return x
-}
-
-// minHeap := &GzHeap{gz{0,0,grid[0][0]}}
-// heap.Init(minHeap)
-// tempDian := heap.Pop(minHeap).(gz)
-// heap.Push(minHeap,gz{nowX,nowY,nowV})
-
-// func search(){
-//         index := sort.Search(len(tt),func(z int) bool {
-//             // 返回符合条件的最小index
-//             return tt[z] > 1
-//         })
-// }
