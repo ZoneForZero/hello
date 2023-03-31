@@ -5,11 +5,17 @@ import (
 	"sort"
 )
 
+// 最大公约数
 func gcd(a, b int) int {
 	if b%a == 0 {
 		return a
 	}
 	return gcd(b%a, a)
+}
+
+// 最小公倍数
+func lcm(a, b int) int {
+	return a * b / gcd(a, b)
 }
 
 // 取最大值
@@ -179,6 +185,8 @@ func allToNum(sum int, packs []int) int {
 	}
 	return dp[sum]
 }
+
+// 组合
 func getC(num, all int) int {
 	if all-num > num {
 		return getC(all-num, num)
@@ -196,7 +204,7 @@ func getC(num, all int) int {
 }
 
 // 边构造无向图
-func getTuFromEdge(edges [][]int, numNode int) [][]int {
+func lineToTu(edges [][]int, numNode int) [][]int {
 	ans := make([][]int, numNode)
 	for i := 0; i < numNode; i++ {
 		ans[i] = make([]int, numNode)
@@ -223,6 +231,68 @@ func getTuFromEdge(edges [][]int, numNode int) [][]int {
 		}
 		ans[node1][node2], ans[node2][node1] = 1, 1
 		tuFlags[node1], tuFlags[node2] = true, true
+	}
+	return ans
+}
+
+// 两int的绝对差
+func seq(a, b int) int {
+	if a > b {
+		return a - b
+	}
+	return b - a
+}
+
+// 坐标点的曼哈顿距离计算
+func pointMHD(point1, point2 []int) int {
+	return seq(point1[0], point2[0]) + seq(point1[1], point2[1])
+}
+
+// 坐标点数组生成 点距离
+func pointToTu(points [][]int) [][]int {
+	lenP := len(points)
+	tu := make([][]int, lenP)
+	for i := 0; i < lenP; i++ {
+		tu[i] = make([]int, lenP)
+	}
+	for i := 0; i < lenP; i++ {
+		for j := i + 1; j < lenP; j++ {
+			v := pointMHD(points[i], points[j])
+			tu[i][j] = v
+			tu[j][i] = v
+		}
+	}
+	return tu
+}
+
+// prim最小生成树
+func prim(tu [][]int) int {
+	// 图与点的最短距离 初始化默认为下标0的距离关系
+	minVs := tu[0]
+	nodeNum := len(tu)
+	nowNum := 1
+	maxV := 1000000 * 3
+	ans := 0
+	for nowNum < nodeNum {
+		nowNum++
+		nextV := maxV
+		nextIndex := 0
+		for i := 0; i < nodeNum; i++ {
+			if minVs[i] == 0 {
+				continue
+			}
+			if minVs[i] < nextV {
+				nextV = minVs[i]
+				nextIndex = i
+			}
+		}
+		// nextIndex -> tu
+		ans += minVs[nextIndex]
+		for i := 0; i < nodeNum; i++ {
+			if tu[nextIndex][i] < minVs[i] {
+				minVs[i] = tu[nextIndex][i]
+			}
+		}
 	}
 	return ans
 }
