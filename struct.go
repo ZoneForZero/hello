@@ -31,3 +31,61 @@ func (gzheap *GzHeap) Pop() interface{} {
 //             return tt[z] > 1
 //         })
 // }
+
+// segment tree
+type node struct {
+	l, r          int
+	pre, suf, mid int
+}
+type segmentTree struct {
+	nodes []node
+}
+
+func (tree *segmentTree) init(nodeNum int) {
+	(*tree).nodes = make([]node, nodeNum*4)
+}
+func (tree *segmentTree) maintain(nowIndex int) {
+	// fmt.Println("计算", nowIndex)
+	lIndex := nowIndex * 2
+	tree.nodes[nowIndex].pre = tree.nodes[lIndex].pre
+	tree.nodes[nowIndex].suf = tree.nodes[lIndex+1].suf
+	tree.nodes[nowIndex].mid = maxInt(tree.nodes[lIndex].mid, tree.nodes[lIndex+1].mid, tree.nodes[nowIndex].pre, tree.nodes[nowIndex].suf)
+	// 可以连接
+	if str[tree.nodes[lIndex].r] == str[tree.nodes[lIndex+1].l] {
+		if tree.nodes[lIndex].pre == (tree.nodes[lIndex].r - tree.nodes[lIndex].l + 1) {
+			tree.nodes[nowIndex].pre += tree.nodes[lIndex+1].pre
+		}
+		if tree.nodes[lIndex+1].suf == (tree.nodes[lIndex+1].r - tree.nodes[lIndex+1].l + 1) {
+			tree.nodes[nowIndex].suf += tree.nodes[lIndex].suf
+		}
+		if tree.nodes[lIndex].suf+tree.nodes[lIndex+1].pre > tree.nodes[nowIndex].mid {
+			tree.nodes[nowIndex].mid = tree.nodes[lIndex].suf + tree.nodes[lIndex+1].pre
+		}
+	}
+}
+
+func (tree *segmentTree) build(l, r, nowIndex int) {
+	tree.nodes[nowIndex] = node{l, r, 1, 1, 1}
+	if l == r {
+		return
+	}
+
+	mid := (l + r) / 2
+	lIndex := nowIndex * 2
+	tree.build(l, mid, lIndex)
+	tree.build(mid+1, r, lIndex+1)
+	tree.maintain(nowIndex)
+}
+
+func (tree *segmentTree) update(nowIndex, changeIndex int) {
+	if tree.nodes[nowIndex].l == tree.nodes[nowIndex].r {
+		return
+	}
+	nextTreeIndex := nowIndex * 2
+	if tree.nodes[nextTreeIndex].l <= changeIndex && tree.nodes[nextTreeIndex].r >= changeIndex {
+		tree.update(nextTreeIndex, changeIndex)
+	} else {
+		tree.update(nextTreeIndex+1, changeIndex)
+	}
+	tree.maintain(nowIndex)
+}
