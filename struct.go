@@ -41,6 +41,8 @@ type segmentTree struct {
 	nodes []node
 }
 
+var str string
+
 func (tree *segmentTree) init(nodeNum int) {
 	(*tree).nodes = make([]node, nodeNum*4)
 }
