@@ -350,3 +350,37 @@ func disk(nodeNum int, edges [][]int) int {
 	}
 	return ans
 }
+
+// 计算数值的出现次数 返回map
+func countMap(arr []int) map[int]int {
+	ans := make(map[int]int, len(arr))
+	for _, v := range arr {
+		if num, ok := ans[v]; ok {
+			ans[v] = num + 1
+		} else {
+			ans[v] = 1
+		}
+	}
+	return ans
+}
+
+// 计算数值的出现次数 返回array 按次数生序
+func countArr(arr []int) [][2]int {
+	lenA := len(arr)
+	ans := make(map[int]int, lenA)
+	rt := make([][2]int, 0, lenA)
+	for _, v := range arr {
+		if num, ok := ans[v]; ok {
+			ans[v] = num + 1
+		} else {
+			ans[v] = 1
+		}
+	}
+	for val, times := range ans {
+		rt = append(rt, [2]int{val, times})
+	}
+	sort.Slice(rt, func(i, j int) bool {
+		return rt[i][1] < rt[j][1]
+	})
+	return rt
+}
