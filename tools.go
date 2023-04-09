@@ -74,7 +74,7 @@ func isPrime(val int) bool {
 	if val == 2 || val == 3 {
 		return true
 	}
-	if val%2 == 0 {
+	if val%2 == 0 || val%3 == 0 {
 		return false
 	}
 	maxV := int(math.Sqrt(float64(val)))
