@@ -203,8 +203,8 @@ func getC(num, all int) int {
 	return ans
 }
 
-// 边构造无向图
-func lineToTu(edges [][]int, numNode int) [][]int {
+// 边构造无向距离图
+func line2edgeTu(edges [][]int, numNode int) [][]int {
 	ans := make([][]int, numNode)
 	for i := 0; i < numNode; i++ {
 		ans[i] = make([]int, numNode)
@@ -231,6 +231,36 @@ func lineToTu(edges [][]int, numNode int) [][]int {
 		}
 		ans[node1][node2], ans[node2][node1] = 1, 1
 		tuFlags[node1], tuFlags[node2] = true, true
+	}
+	return ans
+}
+
+// 边构造无向连接图
+func line2flagTu(edges [][]int, numNode int) [][]bool {
+	ans := make([][]bool, numNode)
+	for i := 0; i < numNode; i++ {
+		ans[i] = make([]bool, numNode)
+	}
+	lenE := len(edges)
+	for i := 0; i < lenE; i++ {
+		node1, node2 := edges[i][0], edges[i][1]
+		ans[node1][node2] = true
+		ans[node2][node1] = true
+	}
+	return ans
+}
+
+// 边构造无向下标二维数组
+func line2flagArr(edges [][]int, numNode int) [][]int {
+	ans := make([][]int, numNode)
+	for i := 0; i < numNode; i++ {
+		ans[i] = make([]int, 0, numNode)
+	}
+	lenE := len(edges)
+	for i := 0; i < lenE; i++ {
+		node1, node2 := edges[i][0], edges[i][1]
+		ans[node1] = append(ans[node1], node2)
+		ans[node2] = append(ans[node2], node1)
 	}
 	return ans
 }
