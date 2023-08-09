@@ -20,6 +20,9 @@ func (gzheap *GzHeap) Pop() interface{} {
 	return x
 }
 
+// TODO add the top func
+// 
+
 // minHeap := &GzHeap{gz{0,0,grid[0][0]}}
 // heap.Init(minHeap)
 // tempDian := heap.Pop(minHeap).(gz)

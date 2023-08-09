@@ -187,8 +187,9 @@ func allToNum(sum int, packs []int) int {
 }
 
 // 组合
+// TODO 有问题！！！
 func getC(num, all int) int {
-	if all-num > num {
+	if all-num < num {
 		return getC(all-num, num)
 	}
 	cheng := all
