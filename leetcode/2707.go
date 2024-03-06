@@ -32,6 +32,6 @@ func minExtraChar(s string, dictionary []string) int {
 	return dp[lenS]
 }
 func init() {
-	fmt.Println("???")
-	fmt.Println(minExtraChar("leetcode", []string{"leet", "code", "leetcode"}))
+	//fmt.Println("???")
+	//fmt.Println(minExtraChar("leetcode", []string{"leet", "code", "leetcode"}))
 }
