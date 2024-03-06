@@ -1,4 +1,4 @@
-package pack1
+package lock
 
 import (
 	"runtime"
@@ -21,3 +21,7 @@ func getRId() int64 {
 	id, _ := strconv.Atoi(rId)
 	return int64(id)
 }
+
+// 分级缓存
+// io的多种情况
+// 分布式系统的了解
